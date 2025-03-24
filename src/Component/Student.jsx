@@ -16,9 +16,14 @@ import {
   Toolbar,
   IconButton,
   Typography,
+  Container,
+  Box,
+  Grid,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import "./Student.css";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Student = () => {
   const dispatch = useDispatch();
@@ -72,99 +77,80 @@ const Student = () => {
   };
 
   return (
-    <>
-      {/* Button to open the form */}
-      <Button variant="contained" color="primary" onClick={() => setShowForm(true)}  >
-        Add Student
-      </Button>
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      <Box display="flex" justifyContent="center" mb={3}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddCircleOutlineIcon />}
+          onClick={() => setShowForm(true)}
+        >
+          Add Student
+        </Button>
+      </Box>
 
-      {/* Full-screen Dialog */}
+      {/* Dialog Form */}
       <Dialog fullScreen open={showForm} onClose={handleClose}>
-        <AppBar sx={{ position: "relative" }}>
+        <AppBar position="sticky" sx={{ bgcolor: "#1976d2" }}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
               <CloseIcon />
             </IconButton>
-            <Typography sx={{ flex: 1 }} variant="h6" component="div">
+            <Typography sx={{ flex: 1, textAlign: "center" }} variant="h6">
               {editingStudent ? "Edit Student" : "Add Student"}
             </Typography>
           </Toolbar>
         </AppBar>
-        <form onSubmit={handleSubmit} style={{ padding: "20px", width: 700,  }} className="form-container" >
-          <TextField
-            label="Name"
-            name="name"
-            value={studentData.name}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Course"
-            name="course"
-            value={studentData.course}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Age"
-            type="number"
-            name="age"
-            value={studentData.age}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            // label="Batch"
-            name="Batch"
-            type="month"
-            value={studentData.Batch}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
-          <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: "20px" }}>
-            {editingStudent ? "Update Student" : "Add Student"}
-          </Button>
-        </form>
+        <Container maxWidth="sm">
+          <Box p={4} mt={4} borderRadius={2} boxShadow={3} bgcolor="white">
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField label="Name" name="name" value={studentData.name} onChange={handleChange} fullWidth />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Course" name="course" value={studentData.course} onChange={handleChange} fullWidth />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField label="Age" type="number" name="age" value={studentData.age} onChange={handleChange} fullWidth />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField name="Batch" type="month" value={studentData.Batch} onChange={handleChange} fullWidth />
+                </Grid>
+              </Grid>
+              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 3 }}>
+                {editingStudent ? "Update Student" : "Add Student"}
+              </Button>
+            </form>
+          </Box>
+        </Container>
       </Dialog>
 
       {/* Student Table */}
-      <TableContainer component={Paper} style={{ maxWidth: 900, margin: "auto", marginTop: "40px" }}>
+      <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
         <Table>
-          <TableHead>
+          <TableHead sx={{ bgcolor: "#1976d2" }}>
             <TableRow>
-              <TableCell><strong>Name</strong></TableCell>
-              <TableCell align="right"><strong>Age</strong></TableCell>
-              <TableCell align="right"><strong>Course</strong></TableCell>
-              <TableCell align="right"><strong>Batch</strong></TableCell>
-              <TableCell align="center"><strong>Actions</strong></TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>Name</TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }} align="right">Age</TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }} align="right">Course</TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }} align="right">Batch</TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }} align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {students.length > 0 ? (
               students.map((student) => (
-                <TableRow key={student.id}>
+                <TableRow key={student.id} hover>
                   <TableCell>{student.name}</TableCell>
                   <TableCell align="right">{student.age}</TableCell>
                   <TableCell align="right">{student.course}</TableCell>
                   <TableCell align="right">{student.Batch}</TableCell>
                   <TableCell align="center">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleEdit(student)}
-                      style={{ marginRight: "10px" }}
-                    >
+                    <Button variant="contained" color="warning" startIcon={<EditIcon />} onClick={() => handleEdit(student)} sx={{ mr: 1 }}>
                       Edit
                     </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleDelete(student.id)}
-                    >
+                    <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(student.id)}>
                       Delete
                     </Button>
                   </TableCell>
@@ -172,15 +158,13 @@ const Student = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No students available
-                </TableCell>
+                <TableCell colSpan={5} align="center">No students available</TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Container>
   );
 };
 
